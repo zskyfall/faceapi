@@ -31,3 +31,5 @@ video.addEventListener('play', () => {
 		faceapi.draw.drawFaceLandmarks(canvas, resizedDectections)
 	}, 100)
 })
+
+

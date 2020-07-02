@@ -20,6 +20,10 @@ app.get('/', function(req, res) {
 	res.render('index');
 });
 
+app.get('/recog', function(req, res) {
+	res.render('recognize');
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
