@@ -43,7 +43,7 @@ video.addEventListener('play', () => {
 		const anchor = { x: detections[0].alignedRect._box.x, y: detections[0].alignedRect._box.y}
 
 		const drawOptions = {
-			label: 'Tao la thang',
+			label: '',
 			lineWidth: 2
 		}
 
