@@ -39,29 +39,53 @@ function loadLabelImages() {
 
 function getCurrentDateTime() {
 	var today = new Date();
-	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var date = today.getDate() + '-' + (today.getMonth()+1) + '-' + today.getFullYear();
 	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 	var dateTime = date+' '+time;
 
 	return dateTime;
 }
 
-async function isAttendanced(id, date) {
-	let url = 'http://localhost:3000/attendance/' + id + '/' + date;
-	fetch(url)
-		.then(async function(response) {
-		    if (!response.ok) {
-		    	throw Error(response.statusText);
-		  	}
-		  // Read the response as json.
-		  	console.log(await response.json());
-		})
-		.catch(function(error) {
-		  console.log('Looks like there was a problem: \n', error);
-		});
-
+function getCurrentDate() {
+	var today = new Date();
+	var date = today.getDate() + '-' + (today.getMonth()+1) + '-' + today.getFullYear();
+	return date;
 }
 
+async function isAttendanced(id, date) {
+	let url = 'http://localhost:3000/attendance/' + id + '/' + date;
+	var check = fetch(url)
+		.then(async function(response) {
+		    if (!response.ok) {
+		    	return false;
+		  	}
+		  // Read the response as json.
+		  	response = await response.json();
+		  	console.log(response.isAttendanced);
+		  	if(response.isAttendanced === 'true') {
+		  		return true;
+		  	}
+		  	else {
+		  		return false;
+		  	}
+		  	//console.log(await response.json());
+		})
+		.catch(function(error) {
+		  	return false;
+		});
+	return check;
+}
+
+(async function() {
+
+	if(await isAttendanced('Thang', getCurrentDate())) {
+		console.log("okkk");
+	}
+	else {
+		console.log("dddd");
+	}
+
+})();
 
 video.addEventListener('play', async () => {
 	const canvas = faceapi.createCanvasFromMedia(video)
@@ -87,13 +111,17 @@ video.addEventListener('play', async () => {
 
 		results.forEach((result,i ) => {
 			const box = resizedDetections[i].detection.box;
-			const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() })
+			const boxOption = {
+				label: result.toString(),
+				boxColor: 'green'
+			};
+			const drawBox = new faceapi.draw.DrawBox(box, boxOption);
 			drawBox.draw(canvas)
   			
   			var trust_score = resizedDetections[i].detection.score;
 
   			if(trust_score >= 0.8) {
-  				//console.log(result.toString() + " da diem danh - " + trust_score);
+  				console.log(result.toString() + " da diem danh - " + trust_score);
   			} 
 
 			//console.log(getCurrentDateTime());

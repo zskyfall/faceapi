@@ -3,6 +3,20 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/faceapi');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Lỗi kết nối CSDL'));
+db.once('open', function() {
+	console.log('Kết nối DB thành công!');
+});
+
+var attendanceSchema = mongoose.Schema({
+	id: String,
+	date: String
+});
+
+var Attendance = mongoose.model('attendance', attendanceSchema);
 
 var app = express();
 
@@ -34,8 +48,40 @@ app.get('/attendance/:id/:date', function(req, res) {
 	var date = req.params.date;
 	console.log(id);
 	console.log(date);
-	
-	res.json({success: 'true'});
+
+	Attendance.countDocuments({id: id, date: date}, function(err, c) {
+
+		if(!err) {
+			if(c >= 1) {
+				res.json({isAttendanced: 'true'});
+			}
+			else {
+				res.json({isAttendanced: 'false'});
+
+			}			
+		}
+		else {
+			res.json({isAttendanced: 'false'});
+		}
+
+	});
+
+	//res.json({success: 'true'});
+});
+
+app.get('/test/insert', function(req, res) {
+
+	var att = new Attendance({
+		id: 'Thang',
+		date: '15-7-2020'
+	});
+
+	att.save(function(err) {
+		if(!err) {
+			res.send("ok")
+		}
+	});
+
 });
 
 // catch 404 and forward to error handler
