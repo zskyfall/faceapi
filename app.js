@@ -24,6 +24,20 @@ app.get('/recog', function(req, res) {
 	res.render('recognize');
 });
 
+app.get('/detect', function(req, res) {
+	res.render('detector');
+});
+
+app.get('/attendance/:id/:date', function(req, res) {
+
+	var id = req.params.id;
+	var date = req.params.date;
+	console.log(id);
+	console.log(date);
+	
+	res.json({success: 'true'});
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

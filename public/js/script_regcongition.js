@@ -42,7 +42,7 @@ async function start() {
 
 
 function loadLabelImages() {
-	const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thor', 'Tony Stark'];
+	const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thang', 'Thor', 'Tony Stark'];
 	return Promise.all(
 		labels.map(async label => {
 			const descriptions = [];
@@ -52,6 +52,8 @@ function loadLabelImages() {
 				const detections = await faceapi.detectSingleFace(img)
 				.withFaceLandmarks().withFaceDescriptor()
 				descriptions.push(detections.descriptor)
+
+				//console.log("load image: " + label + " - " + descriptions);
 			}
 
 			return new faceapi.LabeledFaceDescriptors(label, descriptions)
