@@ -117,6 +117,7 @@ video.addEventListener('play', async () => {
 		const detections = await faceapi.detectAllFaces(video)
 		.withFaceLandmarks()
 		.withFaceDescriptors()
+
 		//console.log(detections)
 
 		const resizedDetections = faceapi.resizeResults(detections, displaySize)
