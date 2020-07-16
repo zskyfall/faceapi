@@ -13,7 +13,8 @@ db.once('open', function() {
 
 var attendanceSchema = mongoose.Schema({
 	id: String,
-	date: String
+	date: String,
+	time: String
 });
 
 var Attendance = mongoose.model('attendance', attendanceSchema);
@@ -42,23 +43,38 @@ app.get('/detect', function(req, res) {
 	res.render('detector');
 });
 
-app.get('/attendance/:id/:date', function(req, res) {
+app.get('/attendance/:id/:date/:time', function(req, res) {
 
 	var id = req.params.id;
 	var date = req.params.date;
+	var time = req.params.time;
+
 	console.log(id);
 	console.log(date);
 
 	Attendance.countDocuments({id: id, date: date}, function(err, c) {
 
 		if(!err) {
-			if(c >= 1) {
+			if(c === 1) {
 				res.json({isAttendanced: 'true'});
 			}
-			else {
-				res.json({isAttendanced: 'false'});
+			else if(c < 1) {
 
-			}			
+				var att = new Attendance({
+					id: id,
+					date: date,
+					time: time
+				});
+
+				att.save(function(er) {
+					if(!er) {
+						res.json({isAttendanced: 'true'});
+					}
+					else {
+						console.log(er);
+					}
+				});
+			}		
 		}
 		else {
 			res.json({isAttendanced: 'false'});
@@ -67,6 +83,23 @@ app.get('/attendance/:id/:date', function(req, res) {
 	});
 
 	//res.json({success: 'true'});
+});
+
+app.get('/detail/attendance/:id', function(req, res) {
+
+	var id = req.params.id;
+
+	Attendance.findOne({id: id}, function(err, att) {
+
+		if(!err) {
+			res.json({success: 'true', detail: att});
+		}
+		else {
+			res.json({success: 'false', error: err});
+		}
+
+	});
+
 });
 
 app.get('/test/insert', function(req, res) {

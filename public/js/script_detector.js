@@ -37,13 +37,10 @@ function loadLabelImages() {
 	)
 }
 
-function getCurrentDateTime() {
+function getCurrentTime() {
 	var today = new Date();
-	var date = today.getDate() + '-' + (today.getMonth()+1) + '-' + today.getFullYear();
 	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-	var dateTime = date+' '+time;
-
-	return dateTime;
+	return time;
 }
 
 function getCurrentDate() {
@@ -52,8 +49,8 @@ function getCurrentDate() {
 	return date;
 }
 
-async function isAttendanced(id, date) {
-	let url = 'http://localhost:3000/attendance/' + id + '/' + date;
+async function isAttendanced(id, date, time) {
+	let url = 'http://localhost:3000/attendance/' + id + '/' + date + '/' + time;
 	var check = fetch(url)
 		.then(async function(response) {
 		    if (!response.ok) {
@@ -76,25 +73,45 @@ async function isAttendanced(id, date) {
 	return check;
 }
 
+async function getAttendancDetail(id) {
+	let url = 'http://localhost:3000/detail/attendance/' + id;
+	var check = fetch(url)
+		.then(async function(response) {
+		    if (!response.ok) {
+		    	return response;
+		  	}
+		  // Read the response as json.
+		  	response = await response.json();
+		  	return response;
+		  	//console.log(await response.json());
+		})
+		.catch(function(error) {
+		  	return error;
+		});
+	return check;
+}
+
 (async function() {
+	let response = await getAttendancDetail('Thang');
+	if(response.success === 'true') {
+  		console.log(response.detail);
+  	}
+  	else {
+  		console.log(response);
+  	}
+	console.log("xxx: " + response);
+});
 
-	if(await isAttendanced('Thang', getCurrentDate())) {
-		console.log("okkk");
-	}
-	else {
-		console.log("dddd");
-	}
-
-})();
 
 video.addEventListener('play', async () => {
 	const canvas = faceapi.createCanvasFromMedia(video)
+
 	document.body.append(canvas)
 	const displaySize = {width: video.width, height: video.height}
-	faceapi.matchDimensions(canvas, displaySize)
+	faceapi.matchDimensions(canvas, displaySize);
 
 	const labeledFaceDescriptors = await loadLabelImages()
-	const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.6)
+	const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.8)
 
 	setInterval(async () => {
 		const detections = await faceapi.detectAllFaces(video)
@@ -109,23 +126,38 @@ video.addEventListener('play', async () => {
 
 		const results = resizedDetections.map(d => faceMatcher.findBestMatch(d.descriptor))
 
-		results.forEach((result,i ) => {
+		results.forEach(async (result,i ) => {
+
+			let label;
+			let boxColor = "red";
+			var name = result.toString();
+  			var ind = name.indexOf("(");
+				name = name.substring(0, ind).trim();
+
+			if(name !== 'unknown') {
+				if(await isAttendanced(name, getCurrentDate(), getCurrentTime())) {
+					let detail = await getAttendancDetail(name);
+					if(detail.success === 'true') {
+				  		label = name + " " + "đã điểm danh: " + detail.detail.time + " | " + detail.detail.date;
+						boxColor = "green";
+				  	}
+				}
+				else {
+					label = result.toString();
+				}
+			}
 			const box = resizedDetections[i].detection.box;
+
 			const boxOption = {
-				label: result.toString(),
-				boxColor: 'green'
+				label: label,
+				boxColor: boxColor
 			};
 			const drawBox = new faceapi.draw.DrawBox(box, boxOption);
 			drawBox.draw(canvas)
   			
   			var trust_score = resizedDetections[i].detection.score;
 
-  			if(trust_score >= 0.8) {
-  				console.log(result.toString() + " da diem danh - " + trust_score);
-  			} 
-
-			//console.log(getCurrentDateTime());
-		})
+		});
 
 
 		// const text = [
@@ -143,7 +175,7 @@ video.addEventListener('play', async () => {
 
 		// const drawBox = new faceapi.draw.DrawTextField(text, anchor, drawOptions)
 		// 	  drawBox.draw(canvas)
-	}, 100)
+	}, 1000)
 })
 
 
