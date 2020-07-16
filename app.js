@@ -22,6 +22,7 @@ db.once('open', function() {
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var attendanceRouter = require('./routes/attendance');
 
 var app = express();
 
@@ -46,75 +47,7 @@ app.use('/admin', express.static(path.join(__dirname + '/public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-app.get('/attendance/:id/:date/:time', function(req, res) {
-
-	var id = req.params.id;
-	var date = req.params.date;
-	var time = req.params.time;
-
-	console.log(id);
-	console.log(date);
-
-	Attendance.countDocuments({id: id, date: date}, function(err, c) {
-
-		if(!err) {
-			if(c === 1) {
-				res.json({isAttendanced: 'true'});
-			}
-			else if(c < 1) {
-
-				var att = new Attendance({
-					id: id,
-					date: date,
-					time: time
-				});
-
-				att.save(function(er) {
-					if(!er) {
-						res.json({isAttendanced: 'true'});
-					}
-					else {
-						console.log(er);
-					}
-				});
-			}		
-		}
-		else {
-			res.json({isAttendanced: 'false'});
-		}
-
-	});
-
-	//res.json({success: 'true'});
-});
-
-app.get('/view/attendance/user/:id', function(req, res) {
-	var id = req.params.id;
-
-	Attendance.find({id: id})
-
-	res.render('user_attendance_list');
-
-});
-
-app.get('/detail/attendance/:id', function(req, res) {
-
-	var id = req.params.id;
-
-	Attendance.findOne({id: id}, function(err, att) {
-
-		if(!err) {
-			res.json({success: 'true', detail: att});
-		}
-		else {
-			res.json({success: 'false', error: err});
-		}
-
-	});
-
-});
-
+app.use('/attendance', attendanceRouter);
 
 app.get('/test/insert', function(req, res) {
 

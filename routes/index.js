@@ -44,10 +44,6 @@ router.get('/register', function(req, res, next) {
   	 res.render('register', {register_error: req.flash('register_error')});
 });
 
-router.get('/login', function(req, res, next) {
-	res.render('login', {login_error: req.flash('login_error')});
-});
-
 router.get('/home', function(req, res, next) {
 	console.log(req.session.logined);
 	if(req.session.logined) {
