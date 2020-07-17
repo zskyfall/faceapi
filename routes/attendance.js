@@ -10,17 +10,53 @@ var Attendance = require('../models/Attendance');
 
 //Databases
 var UserDB = require('../databases/UserDB');
+var AttendanceDB = require('../databases/AttendanceDB');
 
 //Utils
 var remove_special_chars = require('../utils/remove_special_chars');
 var string_to_date = require('../utils/string_to_date');
 
-router.get('/user/:id', function(req, res) {
-	var id = req.params.id;
+router.get('/user/:code', function(req, res) {
+	var code = req.params.code;
 
-	Attendance.find({id: id})
+	User.findOne({code: code}, (err, u) => {
+		if(err) {
+			console.log(err);
+		}
+		else {
+			Attendance.find({user_code: code}, (er, att) => {
+				if(er) {
+					console.log(er);
+				}
+				else {
+					let result = {user: u, attendances: att};
 
-	res.render('user_attendance_list');
+					console.log(result);
+
+					res.render("user_attendance_list", result);
+				}
+
+			});
+		}
+	})
+
+});
+
+router.get('/date/:date', function(req, res) {
+	var date = req.params.date;
+
+	Attendance.find({date: date})
+			  .populate('user_id')
+			  .exec(function (err, rs) {
+				    if (err){
+				    	console.log(err);
+				    	res.send(err);
+				    }
+				    else {
+				    	res.render('date_attendance_list', {rs: rs});
+				    }
+				   
+				});
 
 });
 

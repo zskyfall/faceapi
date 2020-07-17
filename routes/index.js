@@ -55,7 +55,6 @@ router.get('/home', function(req, res, next) {
 
 });
 
-
 router.post('/login', async function(req, res) {
 
 	var {email, password} = req.body;

@@ -23,6 +23,7 @@ db.once('open', function() {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var attendanceRouter = require('./routes/attendance');
+var testRouter = require('./routes/test');
 
 var app = express();
 
@@ -48,21 +49,8 @@ app.use('/admin', express.static(path.join(__dirname + '/public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/attendance', attendanceRouter);
+app.use('/test', testRouter);
 
-app.get('/test/insert', function(req, res) {
-
-	var att = new Attendance({
-		id: 'Thang',
-		date: '15-7-2020'
-	});
-
-	att.save(function(err) {
-		if(!err) {
-			res.send("ok")
-		}
-	});
-
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

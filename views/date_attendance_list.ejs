@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Attendances of <%= user.name %> - <%= user.code %> </title>
+  <title>Attendance by Date</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -12,24 +12,29 @@
 <body>
 
 <div class="container">
-  <h2><%= user.name %> - <%= user.code %></h2>
-  <p><%= user.address %> - SDT: <%= user.phone_number %></p>            
+  <h2></h2>         
   <table class="table table-dark table-striped">
     <thead>
       <tr>
         <th>STT</th>
+        <th>Họ Tên</th>
+        <th>Mã</th>
         <th>Ngày</th>
         <th>Giờ</th>
       </tr>
     </thead>
     <tbody>
-      <% for(var i = 0; i < attendances.length; i++) { %> 
-       <tr>
-        <td><%= i + 1 %></td>
-        <td><%= attendances[i].date %></td>
-        <td><%= attendances[i].time %></td>
-      </tr>
-      <%}%>
+        <% for(var i = 0; i < rs.length; i++) {%>
+
+           <tr>
+            <td><%= i + 1 %></td>
+            <td><%= rs[i].user_id.name %></td>
+            <td><%= rs[i].user_id.code %></td>
+            <td><%= rs[i].date %></td>
+            <td><%= rs[i].time %></td>
+          </tr>
+
+        <%}%>
     </tbody>
   </table>
 </div>

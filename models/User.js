@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var userSchema = mongoose.Schema({
-	id: String,
 	name: String,
 	email: String,
+	code: String,
 	phone_number: String,
 	gender: String,
 	birthday: String,
@@ -12,7 +12,8 @@ var userSchema = mongoose.Schema({
 	avatar: String,
 	photos: [],
 	job: String,
-	level: Number
+	level: Number,
+	attendances: [{ type: Schema.Types.ObjectId, ref: 'Attendance' }]
 });
 
 var User = mongoose.model('User',userSchema);
