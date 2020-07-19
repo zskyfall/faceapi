@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Thêm User</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Thêm User</h2>
+  <p>.</p>
+  <form action="/user/add" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <div class="form-group">
+      <label for="uname">Họ Tên:</label>
+      <input type="text" class="form-control" id="uname" placeholder="VD: Trần Văn Tẹt" name="full_name" required>
+      <div class="valid-feedback">Valid.</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" class="form-control" id="email" placeholder="VD: thitet@gmail.com" name="email" required>
+      <div class="valid-feedback">Valid.</div>
+      <div class="invalid-feedback">Please fill out this field.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone_number">Số Điện Thoại:</label>
+      <input type="text" class="form-control" id="phone_number" placeholder="" name="phone_number" required>
+    </div>
+
+    <div class="form-group">
+      <label for="address">Địa Chỉ:</label>
+      <input type="text" class="form-control" id="address" placeholder="" name="address" required>
+    </div>
+
+
+    <div class="form-group">
+      <label for="birth_day">Ngày Sinh:</label>
+      <input type="text" class="form-control" id="birth_day" placeholder="VD: 23-12-1996" name="phone_number" required>
+    </div>
+
+      <div class="form-group">
+      <label for="gender">Giới Tính:</label>
+          <div class="form-check-inline">
+            <label class="form-check-label">
+              <input type="radio" class="form-check-input" name="gender" value="male">Nam
+            </label>
+          </div>
+          <div class="form-check-inline">
+            <label class="form-check-label">
+              <input type="radio" class="form-check-input" name="gender" value="female">Nữ
+            </label>
+          </div>
+
+          <div class="form-check-inline">
+            <label class="form-check-label">
+              <input type="radio" class="form-check-input" name="gender" value="unknown">Linh Hoạt
+            </label>
+          </div>
+
+      </div>
+
+
+
+     <div class="form-group">
+       <label for="job">Vị Trí:</label>
+       <select class="form-control" id="job" name="job">
+        <option value="PM">PM</option>
+        <option value="Developer">Developer</option>
+        <option value="Tester">Tester</option>
+        <option value="QA">QA</option>
+       </select>
+      </div>
+
+      <div class="form-group">
+       <label for="level">Cấp Bậc:</label>
+       <select class="form-control" id="level" name="level">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+       </select>
+      </div>
+
+      <div class="form-group">
+      <label for="level">Hình Ảnh:</label>
+        <input type="file" name="file" class="form-control-file border">
+      </div>
+
+    <div class="form-group form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" name="remember" required> Tôi hoàn toàn rất đồng ý với chính sách mặc dù chính sách là gì tôi cũng không rõ...
+        <div class="valid-feedback">Valid.</div>
+        <div class="invalid-feedback">Check this checkbox to continue.</div>
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<script>
+// Disable form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Get the forms we want to add validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+
+</body>
+</html>
