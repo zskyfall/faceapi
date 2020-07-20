@@ -37,6 +37,34 @@ function loadLabelImages() {
 	)
 }
 
+async function loadLabelImages2() {
+	const labels = await getPhotoDirs();
+	console.log(labels);
+
+	return Promise.all(
+		labels.map(async label => {
+			const descriptions = [];
+
+			let photos = await getImagesFromDir(label);
+			for(let i = 0; i < photos.length; i++) {
+				let img_path = '/upload/photos/' + label + '/'+ photos[i];
+				console.log(img_path);
+				const img = await faceapi.fetchImage(img_path)
+
+				const detections = await faceapi.detectSingleFace(img)
+												.withFaceLandmarks()
+												.withFaceDescriptor()
+				descriptions.push(detections.descriptor)
+
+				console.log("load image: " + label + " - " + descriptions);
+			}
+
+			return new faceapi.LabeledFaceDescriptors(label, descriptions)
+		})
+	)
+
+};
+
 function getCurrentTime() {
 	var today = new Date();
 	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -49,8 +77,56 @@ function getCurrentDate() {
 	return date;
 }
 
-async function isAttendanced(id, date, time) {
-	let url = 'http://localhost:3000/attendance/' + id + '/' + date + '/' + time;
+async function getPhotoDirs() {
+	let url = 'http://localhost:3000/users/photos/dir';
+	let dirs = fetch(url)
+				.then(async function(response) {
+					if (!response.ok) {
+				    	return false;
+				  	}
+
+				  	response = await response.json();
+				  	if(response.success === 'true') {
+				  		return response.list;
+				  	}
+				  	else {
+				  		return false;
+				  	}
+
+				})
+				.catch(e => {
+					console.log(e);
+					return false;
+				});
+	return dirs;
+}
+
+async function getImagesFromDir(dir) {
+	let url = 'http://localhost:3000/users/photos/images/' + dir;
+	let dirs = fetch(url)
+				.then(async function(response) {
+					if (!response.ok) {
+				    	return false;
+				  	}
+
+				  	response = await response.json();
+				  	if(response.success === 'true') {
+				  		return response.list;
+				  	}
+				  	else {
+				  		return false;
+				  	}
+
+				})
+				.catch(e => {
+					console.log(e);
+					return false;
+				});
+	return dirs;
+}
+
+async function isAttendanced(user_code, date, time) {
+	let url = 'http://localhost:3000/attendance/' + user_code + '/' + date + '/' + time;
 	var check = fetch(url)
 		.then(async function(response) {
 		    if (!response.ok) {
@@ -74,7 +150,7 @@ async function isAttendanced(id, date, time) {
 }
 
 async function getAttendancDetail(id) {
-	let url = 'http://localhost:3000/detail/attendance/' + id;
+	let url = 'http://localhost:3000/attendance/detail/' + id;
 	var check = fetch(url)
 		.then(async function(response) {
 		    if (!response.ok) {
@@ -102,7 +178,6 @@ async function getAttendancDetail(id) {
 	console.log("xxx: " + response);
 });
 
-
 video.addEventListener('play', async () => {
 	const canvas = faceapi.createCanvasFromMedia(video)
 
@@ -110,7 +185,7 @@ video.addEventListener('play', async () => {
 	const displaySize = {width: video.width, height: video.height}
 	faceapi.matchDimensions(canvas, displaySize);
 
-	const labeledFaceDescriptors = await loadLabelImages()
+	const labeledFaceDescriptors = await loadLabelImages2()
 	const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.8)
 
 	setInterval(async () => {
@@ -134,6 +209,7 @@ video.addEventListener('play', async () => {
 			var name = result.toString();
   			var ind = name.indexOf("(");
 				name = name.substring(0, ind).trim();
+				console.log(name);
 
 			if(name !== 'unknown') {
 				if(await isAttendanced(name, getCurrentDate(), getCurrentTime())) {

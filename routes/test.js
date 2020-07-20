@@ -22,6 +22,7 @@ var remove_special_chars = require('../utils/remove_special_chars');
 var string_to_date = require('../utils/string_to_date');
 var getCurrentTime = require('../utils/getCurrentTime');
 var getCurrentDate = require('../utils/getCurrentDate');
+var gen_user_code = require('../utils/gen_user_code');
 
 router.get('/insert/user', (req, res) => {
 	var u = new User({
@@ -111,6 +112,15 @@ router.get('/get', (req, res) => {
 		}
 	});
 });
+
+router.get('/gen-user-code', (req, res) => {
+	var name = "nguyen huu thang";
+	var birth = "23-12-1996";
+
+	var rs = gen_user_code(name, birth);
+
+	res.send(rs);
+})
 
 module.exports = router;
 

@@ -60,11 +60,11 @@ router.get('/date/:date', function(req, res) {
 
 });
 
-router.get('/detail/:id', function(req, res) {
+router.get('/detail/:user_code', function(req, res) {
 
-	var id = req.params.id;
+	var user_code = req.params.user_code;
 
-	Attendance.findOne({id: id}, function(err, att) {
+	Attendance.findOne({user_code: user_code}, function(err, att) {
 
 		if(!err) {
 			res.json({success: 'true', detail: att});
@@ -77,16 +77,16 @@ router.get('/detail/:id', function(req, res) {
 
 });
 
-router.get('/:id/:date/:time', function(req, res) {
+router.get('/:user_code/:date/:time', function(req, res) {
 
-	var id = req.params.id;
+	var user_code = req.params.user_code;
 	var date = req.params.date;
 	var time = req.params.time;
 
-	console.log(id);
+	console.log(user_code);
 	console.log(date);
 
-	Attendance.countDocuments({id: id, date: date}, function(err, c) {
+	Attendance.countDocuments({user_code: user_code, date: date}, function(err, c) {
 
 		if(!err) {
 			if(c === 1) {
@@ -95,7 +95,7 @@ router.get('/:id/:date/:time', function(req, res) {
 			else if(c < 1) {
 
 				var att = new Attendance({
-					id: id,
+					user_code: user_code,
 					date: date,
 					time: time
 				});
