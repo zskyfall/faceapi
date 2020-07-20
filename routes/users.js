@@ -26,7 +26,7 @@ router.get('/photos/dir',async (req, res) => {
 	    list.push(dir);
 	  });
 
-	  res.send(list);
+	  res.json({success: 'true', list: list});
 	});
 
 });
@@ -42,7 +42,7 @@ router.get('/photos/images/:dir',async (req, res) => {
 	    list.push(file);
 	  });
 
-	  res.send(list);
+	  res.json({success: 'true', list: list});
 	});
 
 });
