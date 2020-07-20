@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Attendances of <%= user.name %> - <%= user.code %> </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2><%= user.name %> - <%= user.code %></h2>
+  <p><%= user.address %> - SDT: <%= user.phone_number %></p>            
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Ngày</th>
+        <th>Giờ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i = 0; i < attendances.length; i++) { %> 
+       <tr>
+        <td><%= i + 1 %></td>
+        <td><%= attendances[i].date %></td>
+        <td><%= attendances[i].time %></td>
+      </tr>
+      <%}%>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
