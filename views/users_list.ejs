@@ -42,7 +42,9 @@
           <%});%>
 
         </td>
-        <td><%= users[i].name %></td>
+        <td><%= users[i].name %>
+          <br/> <a href="/attendance/user/<%= users[i].code %>">(Xem Điểm Danh)</a>
+        </td>
         <td><%= users[i].code %></td>
         <td><%= users[i].email %></td>
         <td><%= users[i].address %></td>
