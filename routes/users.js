@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 const path = require("path");
 const fs = require('fs');
-const del = require('del');
 
 const userController = require("../controller/userController");
+
+//Models
+var User = require('../models/User');
 
 /* GET USERS ROUTERS */
 router.get('/', userController.getAllUsers);
@@ -12,6 +14,20 @@ router.get('/', userController.getAllUsers);
 router.get('/add', (req, res) => {
 
 	res.render('admin/add_user');
+
+});
+
+router.get('/edit/:id', (req, res) => {
+	var id = req.params.id;
+
+	User.findOne({_id: id}, (er, u) => {
+		if(er) {
+			res.send(er);
+		}
+		else {
+			res.render('admin/edit_user', {user: u});
+		}
+	});
 
 });
 
@@ -53,5 +69,7 @@ router.get('/photos/images/:dir',async (req, res) => {
 router.post('/add', userController.addUser);
 
 router.post('/remove', userController.removeUser);
+
+router.post('/edit', userController.editUser);
 
 module.exports = router;

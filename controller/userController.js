@@ -79,6 +79,58 @@ let addUser = async (req, res) => {
   }
 };
 
+let editUser = async (req, res) => {
+  let photos_path = [];
+
+  try {
+    await multipleUploadMiddleware(req, res);
+
+    req.files.forEach((file) => {
+      photos_path.push(file.path);
+    });
+
+    let {id, full_name, email, address, phone_number, job, level, gender, birth_day} = req.body;
+    let user_code = gen_user_code(full_name, birth_day);
+
+    if (req.files.length <= 0) {
+      return res.send(`You must select at least 1 file or more.`);
+    }
+
+    var updatedUser = {
+        name: full_name,
+        email: email,
+        code: user_code,
+        phone_number: phone_number,
+        gender: gender,
+        birthday: birth_day,
+        address: address,
+        avatar: photos_path[0],
+        photos: photos_path,
+        job: job,
+        level: level,
+    };
+
+        User.update({_id: id}, updatedUser, (er) => {
+            if(!er) {
+                return res.send('Cập nhật người dùng thành công!');
+            }
+            else {
+                return res.send('Đã xảy ra lỗi: ' + er);
+            }
+        });
+    
+   
+  } catch (error) {
+    debug(error);
+
+    if (error.code === "LIMIT_UNEXPECTED_FILE") {
+      return res.send(`Exceeds the number of files allowed to upload.`);
+    }
+
+    return res.send(`Error when trying upload many files: ${error}}`);
+  }
+};
+
 let getAllUsers = async (req, res) => {
     
     User.find({}).exec((err, users) => {
@@ -91,7 +143,7 @@ let getAllUsers = async (req, res) => {
 
 let removeUser = async (req, res) => {
     let id = req.body.id;
-    console.log(id);
+    //console.log(id);
     User.findOneAndDelete({_id: id}).exec(async (e, u) => {
         if(e) {
             
@@ -116,5 +168,6 @@ let removeUser = async (req, res) => {
 module.exports = {
   addUser: addUser,
   getAllUsers: getAllUsers,
-  removeUser: removeUser
+  removeUser: removeUser,
+  editUser: editUser
 };
