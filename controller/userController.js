@@ -80,6 +80,7 @@ let addUser = async (req, res) => {
 };
 
 let editUser = async (req, res) => {
+
   let photos_path = [];
 
   try {
@@ -110,15 +111,14 @@ let editUser = async (req, res) => {
         level: level,
     };
 
-        User.update({_id: id}, updatedUser, (er) => {
-            if(!er) {
-                return res.send('Cập nhật người dùng thành công!');
-            }
-            else {
-                return res.send('Đã xảy ra lỗi: ' + er);
-            }
-        });
-    
+    User.updateOne({_id: id}, updatedUser, (er) => {
+        if(!er) {
+            return res.send('Cập nhật người dùng thành công!');
+        }
+        else {
+            return res.send('Đã xảy ra lỗi: ' + er);
+        }
+    });
    
   } catch (error) {
     debug(error);
