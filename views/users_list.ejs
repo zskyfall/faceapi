@@ -51,12 +51,80 @@
         <td><%= users[i].level %></td>
         <td><%= users[i].birthday %></td>
         <td><%= users[i].gender %></td>
-        <td> <button class="btn-success">Sửa</button> <br> <button class="btn-danger">Xóa</button></td>
+        <td> <button class="btn-success edit" id="<%= users[i]._id %>"><a href="/users/edit/<%= users[i]._id %>">Sửa</a></button> <br> <button class="btn-danger remove" id="<%= users[i]._id %>">Xóa</button></td>
       </tr>
       <%}%>
     </tbody>
   </table>
 </div>
+
+
+<script type="text/javascript">
+
+  async function removeUser(id) {
+
+        $.ajax({
+            url: '/users/remove',
+            type: 'POST',
+            dataType:'json',
+            data:{
+              id: id
+            },
+            success: function(rs){        
+              console.log(rs);
+              if(rs.success === 'true') {
+                console.log("1");
+                return true;
+              }
+              else {
+                console.log("2");
+                return false;
+              }
+            },
+            error: function(er){
+              console.log("3");
+              return false;
+            }
+          });
+  }
+  
+  $(document).ready(function() {
+
+    $('.remove').click(async function() {
+        let id = $(this).attr('id');
+        let parent = $(this).parent().parent();
+        var rs = confirm("Bạn có chắc muốn xóa: " + id + "?");
+        if(rs == true) {
+
+            $.ajax({
+                url: '/users/remove',
+                type: 'POST',
+                dataType:'json',
+                data:{
+                  id: id
+                },
+                success: function(r){        
+                    if(r.success === 'true') {
+                        parent.remove();
+                        alert("Đã Xóa!");
+                    }
+                    else {
+                        alert("Đã xảy ra lỗi! Vui lòng thử lại! " + r);
+                    }
+                },
+                error: function(er){
+                        alert("Đã xảy ra lỗi! Vui lòng thử lại! " + er );
+                }
+              });
+        }
+        else {
+          alert("Đã hủy thao tác!");
+        }
+    });
+
+  });  
+
+</script>
 
 </body>
 </html>

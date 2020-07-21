@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const path = require("path");
 const fs = require('fs');
+const del = require('del');
+
 const userController = require("../controller/userController");
 
 /* GET USERS ROUTERS */
@@ -49,5 +51,7 @@ router.get('/photos/images/:dir',async (req, res) => {
 /*POST USERS ROUTERS */
 
 router.post('/add', userController.addUser);
+
+router.post('/remove', userController.removeUser);
 
 module.exports = router;

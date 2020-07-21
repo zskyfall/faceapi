@@ -1,8 +1,25 @@
+const del = require('del');
+const path = require("path");
+
 const multipleUploadMiddleware = require("../middleware/multipleUploadMiddleware");
 var gen_user_code = require('../utils/gen_user_code');
 var User = require('../models/User');
 
 let debug = console.log.bind(console);
+
+async function removeUserDir(user_code) {
+    let dir_path = path.join(`${__dirname}/../public/upload/photos/` + user_code + '/');
+
+    try {
+        await del(dir_path);
+
+        console.log(`${dir_path} is deleted!`);
+        return true;
+    } catch (err) {
+        console.error(`Error while deleting ${dir_path}.`);
+        return false;
+    }
+}
 
 let addUser = async (req, res) => {
   let photos_path = [];
@@ -72,7 +89,32 @@ let getAllUsers = async (req, res) => {
     });
 }
 
+let removeUser = async (req, res) => {
+    let id = req.body.id;
+    console.log(id);
+    User.findOneAndDelete({_id: id}).exec(async (e, u) => {
+        if(e) {
+            
+            return res.json({success: 'false'});
+        }
+        else {
+            let user_code = u.code;
+            let rs = await removeUserDir(user_code);
+            if(rs) {
+               
+                 return res.json({success: 'true'});
+            }
+            else {
+               
+                return res.json({success: 'false'});
+            }
+           
+        }
+    });
+}
+
 module.exports = {
   addUser: addUser,
-  getAllUsers: getAllUsers
+  getAllUsers: getAllUsers,
+  removeUser: removeUser
 };
