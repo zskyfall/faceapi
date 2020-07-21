@@ -62,6 +62,17 @@ let addUser = async (req, res) => {
   }
 };
 
+let getAllUsers = async (req, res) => {
+    
+    User.find({}).exec((err, users) => {
+        if(err) return res.send("ERROR: " + err);
+        else {
+            return res.render('users_list', {users: users});
+        }
+    });
+}
+
 module.exports = {
-  addUser: addUser
+  addUser: addUser,
+  getAllUsers: getAllUsers
 };

@@ -5,9 +5,7 @@ const fs = require('fs');
 const userController = require("../controller/userController");
 
 /* GET USERS ROUTERS */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', userController.getAllUsers);
 
 router.get('/add', (req, res) => {
 

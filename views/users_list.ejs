@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Users List </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+  <h2></h2>
+  <p></p>            
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Hình Ảnh</th>
+        <th>Họ Tên</th>
+        <th>Mã</th>
+        <th>Email</th>
+        <th>Địa Chỉ</th>
+        <th>SĐT</th>
+        <th>Vị Trí</th>
+        <th>Level</th>
+        <th>Ngày Sinh</th>
+        <th>Giới Tính</th>
+        <th>Sửa / Xóa <th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i = 0; i < users.length; i++) { %> 
+       <tr>
+        <td><%= i + 1 %></td>
+        <td>
+          <% users[i].photos.forEach(function(p){%>
+
+              <img src="<%= p.substring(p.indexOf(`\\upload`), p.length) %>" width="100"/>
+          <%});%>
+
+        </td>
+        <td><%= users[i].name %></td>
+        <td><%= users[i].code %></td>
+        <td><%= users[i].email %></td>
+        <td><%= users[i].address %></td>
+        <td><%= users[i].phone_numner %></td>
+        <td><%= users[i].job %></td>
+        <td><%= users[i].level %></td>
+        <td><%= users[i].birthday %></td>
+        <td><%= users[i].gender %></td>
+        <td> <button class="btn-success">Sửa</button> <br> <button class="btn-danger">Xóa</button></td>
+      </tr>
+      <%}%>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
