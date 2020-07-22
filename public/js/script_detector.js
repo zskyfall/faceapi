@@ -17,26 +17,6 @@ function startVideo() {
 	)
 }
 
-function loadLabelImages() {
-	const labels = ['Black Widow', 'Captain America', 'Captain Marvel', 'Hawkeye', 'Jim Rhodes', 'Thang', 'Thor', 'Tony Stark'];
-	return Promise.all(
-		labels.map(async label => {
-			const descriptions = [];
-
-			for(let i = 1; i <= 2; i++) {
-				const img = await faceapi.fetchImage('/labeled_images/' + label + '/'+ i + '.jpg')
-				const detections = await faceapi.detectSingleFace(img)
-				.withFaceLandmarks().withFaceDescriptor()
-				descriptions.push(detections.descriptor)
-
-				//console.log("load image: " + label + " - " + descriptions);
-			}
-
-			return new faceapi.LabeledFaceDescriptors(label, descriptions)
-		})
-	)
-}
-
 async function loadLabelImages2() {
 	const labels = await getPhotoDirs();
 	console.log(labels);
