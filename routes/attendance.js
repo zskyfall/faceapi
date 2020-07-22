@@ -15,6 +15,24 @@ var AttendanceDB = require('../databases/AttendanceDB');
 //Utils
 var remove_special_chars = require('../utils/remove_special_chars');
 var string_to_date = require('../utils/string_to_date');
+var getCurrentDate = require('../utils/getCurrentDate');
+
+router.get('/', function(req, res) {
+	var date = getCurrentDate();
+
+	Attendance.find({date: date})
+			  .populate('user_id')
+			  .exec(function (err, rs) {
+				    if (err){
+				    	console.log(err);
+				    	res.send(err);
+				    }
+				    else {
+				    	res.render('date_attendance_list', {rs: rs});
+				    }
+				   
+				});
+});
 
 router.get('/user/:code', function(req, res) {
 	var code = req.params.code;
@@ -77,16 +95,17 @@ router.get('/detail/:user_code', function(req, res) {
 
 });
 
-router.get('/:user_code/:date/:time', function(req, res) {
+router.get('/:user_code/:date/:time', async function(req, res) {
 
 	var user_code = req.params.user_code;
 	var date = req.params.date;
 	var time = req.params.time;
+	var user_id = await User.findOne({code: user_code}).select('_id');
 
 	console.log(user_code);
 	console.log(date);
 
-	Attendance.countDocuments({user_code: user_code, date: date}, function(err, c) {
+	await Attendance.countDocuments({user_code: user_code, date: date}, function(err, c) {
 
 		if(!err) {
 			if(c === 1) {
@@ -95,6 +114,7 @@ router.get('/:user_code/:date/:time', function(req, res) {
 			else if(c < 1) {
 
 				var att = new Attendance({
+					user_id: user_id,
 					user_code: user_code,
 					date: date,
 					time: time
